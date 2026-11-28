@@ -83,7 +83,7 @@ impl CopiedState {
     fn new(pages: usize) -> Self {
         let words = pages.div_ceil(64);
         let mut uncopied_bits = vec![u64::MAX; words];
-        if pages % 64 != 0 {
+        if !pages.is_multiple_of(64) {
             uncopied_bits[words - 1] = (1u64 << (pages % 64)) - 1;
         }
         Self { pages: vec![0; pages], uncopied_bits, uncopied: pages, ranged: Default::default() }
@@ -112,6 +112,7 @@ impl CopiedState {
     }
 
     /// How many pages were copied at least once.
+    #[cfg(any(feature = "diagnostics", test))]
     fn copied_count(&self) -> usize {
         self.pages.len() - self.uncopied
     }
@@ -5713,7 +5714,7 @@ mod land_tests {
             });
             let mut now = vec![0u8; LEN];
             for round in 1..200u32 {
-                for block in (0..BLOCKS).filter(|b| (*b as u32 * 5 + round) % 3 != 0) {
+                for block in (0..BLOCKS).filter(|b| !(*b as u32 * 5 + round).is_multiple_of(3)) {
                     for i in (block * PIECE / 4 + 3..(block + 1) * PIECE / 4).step_by(4) {
                         now[i * 4..i * 4 + 4].copy_from_slice(&(round << 20 | i as u32).to_le_bytes());
                     }

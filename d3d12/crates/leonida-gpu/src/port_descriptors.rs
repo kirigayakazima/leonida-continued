@@ -599,7 +599,7 @@ mod tests {
         }
         // SAFETY: `memcpy`'s own, into the vector.
         unsafe {
-            REAL[0].store(libc_memcpy as usize, Relaxed);
+            REAL[0].store(libc_memcpy as *const () as usize, Relaxed);
             copy(heap.as_mut_ptr().add(40 * 32), records.as_ptr(), records.len());
             // A copy that begins inside a record leaves it to the copy that wrote its first word.
             copy(heap.as_mut_ptr().add(100 * 32 + 8), records.as_ptr(), 24);

@@ -128,6 +128,7 @@ pub(super) enum Waits {
 }
 
 /// Whether a step of `runs` reads one of `ranges` on the CPU.
+#[allow(dead_code)]
 pub(super) fn read_by(runs: &[&HostList], ranges: Vec<(usize, usize)>) -> bool {
     reader(runs, ranges).is_some()
 }

@@ -2084,6 +2084,7 @@ static STALE_RELEASES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU
 
 /// Runs of dynamic slots a release refused since the last call
 /// (`LEONIDA_HEAP_ID_GUARD`), logged with the recording line.
+#[cfg(feature = "diagnostics")]
 pub(crate) fn stale_releases() -> u64 {
     STALE_RELEASES.swap(0, std::sync::atomic::Ordering::Relaxed)
 }
@@ -6143,7 +6144,7 @@ void BY_FLOATS_OR_NOT(uint3 id : SV_DispatchThreadID) {
         compact(&mut ranges, 8);
         assert!(ranges.len() <= 4);
         for i in 0..10u64 {
-            assert!(ranges.iter().any(|r| r.0 <= i * 10 && i * 10 + 1 <= r.1), "change {i} lost");
+            assert!(ranges.iter().any(|r| r.0 <= i * 10 && i * 10 < r.1), "change {i} lost");
         }
         let mut touching = vec![(0, 5), (5, 9), (20, 30)];
         compact(&mut touching, 4);

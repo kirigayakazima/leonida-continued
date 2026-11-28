@@ -258,7 +258,7 @@ mod tests {
         for picture in [(3840u32, 2160u32), (2560, 1440), (1920, 1080)] {
             for window in [(1001u32, 333u32), (333, 1001), (3439, 1441), (10000, 10), (10, 10000), (1717, 911)] {
                 let f = frame(picture, window);
-                assert!(f.width % 2 == 0 && f.height % 2 == 0, "{picture:?} in {window:?}: {f:?}");
+                assert!(f.width.is_multiple_of(2) && f.height.is_multiple_of(2), "{picture:?} in {window:?}: {f:?}");
                 assert!(f.width <= MOST && f.height <= MOST, "{f:?}");
                 assert!(f.left + picture.0 <= f.width && f.top + picture.1 <= f.height, "{f:?}");
                 // One side is the picture's, and the bars are equal.

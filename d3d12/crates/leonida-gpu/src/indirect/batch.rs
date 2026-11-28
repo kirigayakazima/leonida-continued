@@ -268,6 +268,7 @@ impl Table {
     /// of the host copy `id`, once the pass has run: a job of it is added if
     /// there is none. `None` if the pass cannot read that copy or has no
     /// room for another job.
+    #[cfg(test)]
     pub(crate) fn place(&mut self, id: u64, offset: u64, kind: u32) -> Option<u64> {
         self.place_packed(id, offset, kind, 0)
     }

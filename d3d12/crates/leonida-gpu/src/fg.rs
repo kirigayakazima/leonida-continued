@@ -157,7 +157,7 @@ impl WideZ for std::ffi::OsStr {
 }
 
 /// For `dlss::tests`: starts Streamline as [`start`] does (and leaves it started).
-#[cfg(test)]
+#[cfg(all(test, feature = "dlss"))]
 pub(crate) fn started_for_test(device: &ID3D12Device) -> bool {
     match init(device) {
         Ok(state) => {
@@ -368,7 +368,7 @@ pub(crate) fn present_start() {
     let index = FRAME.load(Ordering::Relaxed);
     // The amount, at the first present and whenever the menu changed it (looked at twice a second
     // or so): no restart, the proxy swap chain stays.
-    if s.set.is_none() || index % 8 == 0 {
+    if s.set.is_none() || index.is_multiple_of(8) {
         let asked = wanted_now();
         // No more than the card and driver generate (DLSS 4.5 gives up to 5 here: 6x).
         // Asked once here (each question restarts Streamline's count of presented frames).
@@ -478,12 +478,12 @@ pub(crate) fn present_end() {
     // present (r_cgbj41: 1 over 30 presents with the window not focused, so not a running count;
     // DLSS-G generates nothing while the window is not focused).
     const POLL: u32 = 10;
-    if index % POLL == 0 {
+    if index.is_multiple_of(POLL) {
         match s.sl.dlssg_get_state(&VIEWPORT, None) {
             Ok(st) => {
                 let per = if st.status.0 == 0 { st.numFramesActuallyPresented.clamp(1, 6) } else { 1 };
                 SHOWN.store(per, Ordering::Relaxed);
-                if index % 600 == 0 || (index / POLL).is_power_of_two() {
+                if index.is_multiple_of(600) || (index / POLL).is_power_of_two() {
                     tracing::info!(
                         index,
                         tagged,
@@ -497,7 +497,7 @@ pub(crate) fn present_end() {
             }
             Err(e) => {
                 SHOWN.store(1, Ordering::Relaxed);
-                if index % 600 == 0 {
+                if index.is_multiple_of(600) {
                     tracing::warn!(error = %e, "frame generation: no state");
                 }
             }

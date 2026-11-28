@@ -1559,7 +1559,7 @@ fn heap_buffer_pass(heap: &crate::descriptor::Heap, host: &crate::descriptor::ho
     // before its memory had a host copy is only made then.
     let mut kept = host.buffer_sweep.lock().unwrap_or_else(|e| e.into_inner());
     let changed = host.buffer_changes();
-    let all = kept.passes == 0 || (kept.passes % HEAP_ROUND == 0 && !heap_spread());
+    let all = kept.passes == 0 || (kept.passes.is_multiple_of(HEAP_ROUND) && !heap_spread());
     let slots = if all {
         kept.ranges.clear();
         host.buffer_slots()
@@ -2394,7 +2394,7 @@ impl State {
                 } else {
                     crate::memory::Use::Reads
                 };
-                let Some(ready) = self.memory_ready(list, &t, compute, use_) else {
+                let Some(ready) = self.memory_ready(list, t, compute, use_) else {
                     once!("a shader that reads title memory by address without a view heap to hold its views: the draw is dropped");
                     return false;
                 };
@@ -4395,7 +4395,7 @@ impl State {
             let draws: u32 = census.1.values().sum();
             if draws > 0 {
                 let mut rects: Vec<([i32; 4], u32)> = census.1.iter().map(|(r, n)| (*r, *n)).collect();
-                rects.sort_unstable_by(|a, b| b.1.cmp(&a.1));
+                rects.sort_unstable_by_key(|b| std::cmp::Reverse(b.1));
                 let scissors: Vec<String> = rects
                     .iter()
                     .take(5)

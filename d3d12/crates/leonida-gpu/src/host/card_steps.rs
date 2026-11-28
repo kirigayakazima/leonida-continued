@@ -1055,7 +1055,6 @@ impl Host {
             }
             record(level == 0, &own.list.list, &own.between, &reads, &writes, gathering.as_mut());
         }
-        drop(gathering);
         own.list.close();
         // SAFETY: a live buffer.
         let gpu = unsafe { own.between.GetGPUVirtualAddress() };

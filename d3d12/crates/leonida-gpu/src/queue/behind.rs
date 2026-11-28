@@ -916,6 +916,7 @@ fn alias_wait(number: u64) {
 
 /// For whoever must see every page mapping the title asked for so far (a read of title memory
 /// outside the line's order): until they are all done.
+#[allow(dead_code)]
 pub(super) fn alias_drain() {
     alias_wait(ALIAS_SENT.load(Relaxed));
 }
