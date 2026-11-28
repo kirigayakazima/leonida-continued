@@ -10,8 +10,8 @@ use std::process::Command;
 
 use anyhow::{Context, Result, bail};
 
-// (The translator's one file is 570 KiB of source.)
-const MAX_FILE_SIZE: usize = 640 * 1024;
+// (The translator's one file is ~650 KiB of source.)
+const MAX_FILE_SIZE: usize = 768 * 1024;
 const MAX_ENCODED_RUN: usize = 512;
 
 const ALLOWED_EXTENSIONS: &[&str] = &[
@@ -58,7 +58,7 @@ pub fn run(root: &Path, staged: bool) -> Result<()> {
         }
         let content = if staged {
             let out = Command::new("git")
-                .args(["show", &format!(":{path}")])
+                .args(["show", &format!(":./{path}")])
                 .current_dir(root)
                 .output()?;
             if !out.status.success() {
@@ -114,6 +114,9 @@ fn list_files(root: &Path, staged: bool) -> Result<Vec<String>> {
             "--name-only",
             "--diff-filter=ACMR",
             "-z",
+            "--relative",
+            "--",
+            ".",
         ])?
         .context("--staged needs a git repository");
     }
@@ -249,10 +252,18 @@ mod tests {
             !check("data.bin", b"hello").is_empty(),
             "extension not allowed"
         );
+        let oversized = check("a.rs", &vec![b' '; super::MAX_FILE_SIZE + 1]);
         assert!(
-            !check("a.rs", &vec![b'a'; 600 * 1024]).is_empty(),
-            "too big"
+            oversized.iter().any(|p| p.contains("exceeds the")),
+            "expected size-limit violation, got {oversized:?}"
         );
+    }
+
+    #[test]
+    fn workspace_file_list_is_relative_to_d3d12_root() {
+        let files = super::list_files(&crate::workspace_root(), false).unwrap();
+        assert!(files.iter().any(|p| p == "Cargo.toml"), "missing Cargo.toml in {files:?}");
+        assert!(files.iter().all(|p| !p.starts_with("d3d12/")), "paths must be relative to d3d12/");
     }
 
     #[test]
