@@ -26,8 +26,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Clippy
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      # Excludes `dlss`, which requires the proprietary NVIDIA DLSS SDK (LEONIDA_DLSS_SDK).
       - name: Clippy, diagnostics build
-        run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+        run: cargo clippy --workspace --all-targets --locked --features leonida/diagnostics,leonida/mimalloc,leonida-core/diagnostics,leonida-gpu/diagnostics,leonida-gpu/mimalloc,leonida-hle/diagnostics,leonida-hle/mimalloc,leonida-loader/diagnostics,leonida-shader/diagnostics,leonida-shader/host -- -D warnings
       # Includes xtask's repository_passes_policy, the asset-policy check.
       - name: Tests
         run: cargo test --workspace --locked
