@@ -2235,9 +2235,8 @@ mod tests {
             Value::Pad(p) => assert_eq!((p.right_trigger, p.left_x), (1.0, 1.0)),
             _ => unreachable!(),
         }
-        match &state.slots[KEYBOARD].history.back().map(|r| &r.value) {
-            Some(Value::Keys(k)) => assert!(k.iter().all(|k| k.virtual_key == b'D')),
-            _ => {}
+        if let Some(Value::Keys(k)) = state.slots[KEYBOARD].history.back().map(|r| &r.value) {
+            assert!(k.iter().all(|k| k.virtual_key == b'D'));
         }
     }
 

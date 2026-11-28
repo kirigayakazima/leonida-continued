@@ -61,6 +61,12 @@ mod host {
         focus: bool,
     }
 
+    impl Default for Keys {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl Keys {
         pub fn new() -> Keys {
             Keys { focus: focused() }
@@ -76,6 +82,12 @@ mod host {
 
     pub struct Pads {
         empty_until: [Option<Instant>; 4],
+    }
+
+    impl Default for Pads {
+        fn default() -> Self {
+            Self::new()
+        }
     }
 
     impl Pads {

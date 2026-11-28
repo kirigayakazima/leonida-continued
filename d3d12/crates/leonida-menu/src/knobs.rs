@@ -425,7 +425,7 @@ mod tests {
         assert!(injected_keys().is_empty());
         set_injected_keys(&[b'W', 0x20, 0xA0, b'W']);
         assert_eq!(injected_keys(), [0x20, b'W', 0xA0]);
-        set_injected_keys(&[b'D']);
+        set_injected_keys(b"D");
         assert_eq!(injected_keys(), [b'D']);
         set_injected_keys(&[]);
         assert!(injected_keys().is_empty());

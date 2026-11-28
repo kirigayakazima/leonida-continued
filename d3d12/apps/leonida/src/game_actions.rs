@@ -900,7 +900,7 @@ mod tests {
     #[test]
     fn the_spawn_items_are_the_nine_vehicle_cheats() {
         assert_eq!(SPAWNS.len() as u32, places::CHEATS - CHEAT_VEHICLES);
-        assert!(CHEAT_HEALTH < CHEAT_VEHICLES);
+        const { assert!(CHEAT_HEALTH < CHEAT_VEHICLES); }
         // The menu's own ids, each once.
         let pages = leonida_menu::tree::pages();
         let ids: Vec<&str> = pages.iter().flat_map(|p| p.items.iter().map(|i| i.id)).collect();

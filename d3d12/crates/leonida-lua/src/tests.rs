@@ -353,7 +353,7 @@ fn a_mod_that_fails_is_switched_off_and_the_others_go_on() {
     assert_eq!(status(&rt, "a_bad"), Status::Running);
     // Both loaded: two pages, both keys held.
     assert_eq!(fake.pages.borrow().last().unwrap().len(), 2);
-    assert_eq!(fake.injected.borrow().last().unwrap(), &[b'A', b'W']);
+    assert_eq!(fake.injected.borrow().last().unwrap(), b"AW");
     for frame in 1..=3 {
         pass(&mut rt, frame);
     }
@@ -367,7 +367,7 @@ fn a_mod_that_fails_is_switched_off_and_the_others_go_on() {
     let pages = fake.pages.borrow().last().unwrap().clone();
     assert_eq!(pages.len(), 1);
     assert_eq!(pages[0].title, "Good page");
-    assert_eq!(fake.injected.borrow().last().unwrap(), &[b'A']);
+    assert_eq!(fake.injected.borrow().last().unwrap(), b"A");
     assert!(
         fake.of("a_bad")
             .iter()

@@ -1008,7 +1008,7 @@ fn run(config: &Config) -> Result<String, String> {
             (alive, blocks) = build_blocks(&slots);
             alive_at_build = alive.len();
         }
-        if index % 20 == 0 {
+        if index.is_multiple_of(20) {
             eprintln!(
                 "Leonida: find player: sample {index} t={t:.1}s keys={} alive {alive_now} tracked {tracks}",
                 keys_text(keys)

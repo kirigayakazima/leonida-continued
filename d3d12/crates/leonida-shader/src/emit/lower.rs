@@ -1443,13 +1443,13 @@ pub(super) fn with_paired_lanes<R>(f: impl FnOnce() -> R) -> R {
     f()
 }
 
-/// As [`with_local_waves`], with every other use of a lane mask as a number
-/// and every lane read and write taken per host wave too: the program runs
-/// as it would on a console of 32-lane waves, lanes numbered 0..31 or
-/// 32..63 by half. Right for code that only relies on what HLSL's wave
-/// operations promise; a program that takes one wave to be its whole
-/// thread group gets per-half results. The last resort for programs that
-/// do not translate otherwise.
+// As [`with_local_waves`], with every other use of a lane mask as a number
+// and every lane read and write taken per host wave too: the program runs
+// as it would on a console of 32-lane waves, lanes numbered 0..31 or
+// 32..63 by half. Right for code that only relies on what HLSL's wave
+// operations promise; a program that takes one wave to be its whole
+// thread group gets per-half results. The last resort for programs that
+// do not translate otherwise.
 thread_local! {
     /// [`with_lds_loose`] is running.
     static LDS_LOOSE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
@@ -2125,7 +2125,7 @@ impl<'a> Lower<'a> {
                                 // (each host wave on its own, `with_local_waves`, gives and
                                 // takes nothing through LDS: no dwords where a program with all
                                 // of D3D12's 32 KiB of its own has not got them)
-                                if !LOCAL_WAVES.get() || s.lds_dwords + 2 * waves + 1 <= 8192 {
+                                if !LOCAL_WAVES.get() || s.lds_dwords + 2 * waves < 8192 {
                                     s.lds_dwords += 2 * waves;
                                 }
                                 if group > 32 {

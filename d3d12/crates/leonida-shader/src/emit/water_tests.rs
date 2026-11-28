@@ -212,7 +212,7 @@ const fn sop2(op: u32, sdst: u32, ssrc0: u32, ssrc1: u32) -> u32 {
 
 /// VOP3 `v_mbcnt_lo_u32_b32` (`hi: false`) or `_hi_` of the two sources (operand codes).
 const fn mbcnt(hi: bool, vdst: u32, src0: u32, src1: u32) -> [u32; 2] {
-    [0xD765_0000 + ((hi as u32) << 16) | vdst, src0 | src1 << 9]
+    [(0xD765_0000 + ((hi as u32) << 16)) | vdst, src0 | src1 << 9]
 }
 
 const VCC: u32 = 106;
@@ -466,7 +466,7 @@ fn allocation_loop_program() -> NativeProgram {
     let top_at = 5; // the dwords of `init`
     region.push(0);
     let branch_at = region.len() - 1;
-    let offset = (top_at as i32 - (branch_at as i32 + 1)) as i16 as u16 as u32;
+    let offset = (top_at - (branch_at as i32 + 1)) as i16 as u16 as u32;
     region[branch_at] = 0xBF85_0000 | offset; // s_cbranch_scc1 to the top
     two_waves(&head, cmp, &region, &[])
 }

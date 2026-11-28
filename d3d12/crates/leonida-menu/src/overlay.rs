@@ -289,7 +289,7 @@ mod tests {
             size: 20.0,
             colour: [255, 255, 255, 255],
         };
-        let p = painter.paint(&[text.clone()], 1.0).unwrap();
+        let p = painter.paint(std::slice::from_ref(&text), 1.0).unwrap();
         assert_eq!(p.origin, (100, 50));
         // Two 20-pixel dot letters, 12 wide each.
         assert_eq!((p.layers.width, p.layers.height), (24, 20));

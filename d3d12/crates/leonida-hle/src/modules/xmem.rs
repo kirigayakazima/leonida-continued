@@ -1428,7 +1428,7 @@ fn alias_chunk() -> usize {
 /// are to show are looked up now, while their sources show them (the title maps other pages into
 /// its pool next); what comes back maps them, once, on whichever thread calls it.
 pub fn map_aliases_later(ranges: &[(u64, u64, u64)]) -> Box<dyn FnOnce() -> bool + Send> {
-    if ranges.iter().any(|&(to, from, _)| to as usize % PAGE != 0 || (from != 0 && from as usize % PAGE != 0)) {
+    if ranges.iter().any(|&(to, from, _)| !(to as usize).is_multiple_of(PAGE) || (from != 0 && !(from as usize).is_multiple_of(PAGE))) {
         // Not on pages: as before, in the call.
         let done = map_aliases(ranges);
         return Box::new(move || done);

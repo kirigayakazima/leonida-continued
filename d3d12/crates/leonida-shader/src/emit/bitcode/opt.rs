@@ -1220,7 +1220,7 @@ impl Module {
                     body.push(i);
                     continue;
                 };
-                let mut value = |m: &mut Module, body: &mut Vec<u32>, t: &Cond| -> V {
+                let value = |m: &mut Module, body: &mut Vec<u32>, t: &Cond| -> V {
                     t.existing.unwrap_or_else(|| {
                         let x = m.insts.len() as u32;
                         m.insts.push(Inst { ty: i1, op: Op::Bin(Bin::Xor, t.base, yes) });
@@ -1680,7 +1680,7 @@ mod tests {
             ..
         } = kit();
         let (zero, one, two) = (m.i32(0), m.i32(1), m.i32(2));
-        let mut cond = |m: &mut Module, k: V| {
+        let cond = |m: &mut Module, k: V| {
             let v = m.call(b, reads, vec![k, k]);
             m.cmp(b, pred::NE, v, zero)
         };

@@ -6,6 +6,7 @@
 //! and so does what the title times with the processor's time-stamp counter
 //! (`rdtsc`, which no import reaches). Not served with `LEONIDA_MENU=0`.
 #![allow(non_snake_case)]
+#![allow(clippy::not_unsafe_ptr_arg_deref)]
 
 use std::sync::atomic::Ordering;
 

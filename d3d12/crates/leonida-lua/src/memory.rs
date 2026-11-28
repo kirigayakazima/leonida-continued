@@ -91,7 +91,7 @@ impl Pattern {
                 }
             }
         } else {
-            if flat.len() % 2 != 0 {
+            if !flat.len().is_multiple_of(2) {
                 return Err("an odd number of digits".into());
             }
             for pair in flat.chunks(2) {

@@ -567,15 +567,14 @@ pub fn install(base: usize, size: usize) {
     let file = std::env::var_os("LEONIDA_PLAYER_PATHS")
         .map(PathBuf::from)
         .unwrap_or_else(|| out_dir().join("paths.txt"));
-    match std::fs::read_to_string(&file) {
-        Ok(text) => match Known::parse(&text, size) {
+    if let Ok(text) = std::fs::read_to_string(&file) {
+        match Known::parse(&text, size) {
             Ok(k) => {
                 eprintln!("Leonida: player paths: {} group(s) from {}", k.groups.len(), file.display());
                 set_known(k);
             }
             Err(e) => eprintln!("Leonida: player paths in {} not used: {e}", file.display()),
-        },
-        Err(_) => {}
+        }
     }
     leonida_menu::knobs::provide_player(leonida_menu::knobs::PlayerHook {
         ready,
